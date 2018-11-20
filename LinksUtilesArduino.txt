@@ -1,0 +1,23 @@
+Links utiles arduino:
+
+https://playground.arduino.cc/Code/PIDLibrary
+#Libreria PID para arduino
+
+https://playground.arduino.cc/Code/PIDLibaryBasicExample
+#ejemplo de la libreria anterior para controlar un pwm
+
+https://www.arduino.cc/reference/en/#functions
+#explicacion funciones libreria por defecto arduino, incluyendo comunicacion con pines
+
+http://playground.arduino.cc/
+#"Welcome to the Arduino Playground, a wiki where all the users of Arduino can contribute and benefit from their collective research."
+
+http://itp.nyu.edu/physcomp/labs/motors-and-transistors/dc-motor-control-using-an-h-bridge/
+#Proyecto motor DC con h-bridge para que funcione en directa e inversa
+
+https://playground.arduino.cc/Main/DCMotorControl?action=diff
+#Proyecto motor DC con relay para que funcione en directa e inversa3
+
+
+http://roboticaenlaescuela.dc.uba.ar/#
+#PID implementado con sensor de velocidad (curso robótica DC)
