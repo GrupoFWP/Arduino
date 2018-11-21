@@ -8,8 +8,8 @@
 #define VEL_MAX 100
 #define VEL_MIN -100
 #define R_in_mm 25 //16 es el radio en mm de la ruedita de acrílico negra
-#define ANGULAR_VEL_MIN (-16 * PI) 
-#define ANGULAR_VEL_MAX (16 * PI)
+//#define ANGULAR_VEL_MIN (-16 * PI) 
+//#define ANGULAR_VEL_MAX (16 * PI)
 #define LINEAR_VEL_MIN 1 //milimetros por segundo
 #define LINEAR_VEL_MAX 50
 #define CONST_PART_ROTATIONAL_SPEED ((2 * PI)/WHEEL_HOLES)
