@@ -7,45 +7,46 @@
 #define PWM_MIN 30
 #define VEL_MAX 100
 #define VEL_MIN -100
-#define R_in_mm 25 //16 es el radio en mm de la ruedita de acrílico negra
-//#define ANGULAR_VEL_MIN (-16 * PI) 
-//#define ANGULAR_VEL_MAX (16 * PI)
-#define LINEAR_VEL_MIN 1 //milimetros por segundo
-#define LINEAR_VEL_MAX 50
+#define R_in_mm 25 //Es el radio en mm de la rueda amarilla donde se enrolla el hilo
+#define ANGULAR_VEL_MIN (-16 * PI) 
+#define ANGULAR_VEL_MAX (16 * PI)
+//#define LINEAR_VEL_MIN 1 //milimetros por segundo
+//#define LINEAR_VEL_MAX 50
 #define CONST_PART_ROTATIONAL_SPEED ((2 * PI)/WHEEL_HOLES)
-#define KP 2 * 2 * PI * R_in_mm
-#define KI 0.1 * 2 * PI * R_in_mm
-#define KD 0.25 * 2 * PI * R_in_mm
+#define KP 15 
+#define KI 0.1
+#define KD 0.25
 
 volatile unsigned long wheel_pulses = 0;
-//double wheel_angular_velocity = 0.0;
-double wheel_linear_velocity = 0.0;
+double wheel_angular_velocity = 0.0;
 volatile unsigned long wheel_last_time = 0, wheel_actual_time = 0;
 
-/* Gets the current angular velocity based on the encoders pulses in "rpm" */
-/*
+//Gets the current angular velocity based on the encoders pulses in "rpm" */
+
 double angular_velocity(unsigned long pulses, double measurement_time) {
   return (2 * PI * pulses)/(WHEEL_HOLES * measurement_time);
 }
-*/
 
+/*
 double linear_velocity(unsigned long pulses, double measurement_time) {
   return ((2 * PI * R_in_mm *(pulses/(WHEEL_HOLES)))/ measurement_time);
 }
+*/
 
-/*
+
 void angular_velocity_measurement() {
    //Gets the angular velocity for the wheels.The 0.3 seconds is the update time.
   wheel_angular_velocity = angular_velocity(wheel_pulses, 0.3);
   wheel_pulses = 0; // Reset the measurements
 }
-*/
 
+/*
 void linear_velocity_measurement() {
    //Gets the angular velocity for the wheels.The 0.3 seconds is the update time.
   wheel_linear_velocity = linear_velocity(wheel_pulses, 0.3);
   wheel_pulses = 0; // Reset the measurements
 }
+*/
 
 //Mas abajo hay un interrupt, que cuando detecta rising edge llama a esta funcion (el interrupt basicamente hace q el micro deje de hacer lo que estaba haceiendo y ejecute esta funcion). Esta funcion es un contador, que le suman a la función "wheel_pulses" uno cada vez que es llamada. Esta va por otro lado del PID, tal que al PID lo llamas cada X tiempo, y al finalizar el loop resetea el valor de "rwheel_pulses"
 void count_pulse(volatile unsigned long &pulses, volatile unsigned long &last_time) {
@@ -69,17 +70,17 @@ double custom_map(long x, double out_min, double out_max, long in_min, long in_m
 }
 
 
-/*
+
 double compute_angular_velocity_setpoint(int original_velocity) {
   return abs(custom_map(original_velocity, ANGULAR_VEL_MIN, ANGULAR_VEL_MAX, VEL_MIN, VEL_MAX));
 }
-*/
+/*
 
 
 double compute_linear_velocity_setpoint(int original_velocity) {
   return abs(custom_map(original_velocity, LINEAR_VEL_MIN, LINEAR_VEL_MAX, VEL_MIN, VEL_MAX));
 }
-
+*/
 
 
 /* Outputs power to the motors */
@@ -87,7 +88,7 @@ void power_motor(int pin_a, int pin_b, int original_velocity, int PWM) {
   if(original_velocity == 0)
     return;
   analogWrite(pin_a, original_velocity > 0 ? PWM_MIN + PWM : 0);
-  analogWrite(pin_b, original_velocity > 0 ? 0 : PWM_MIN + PWM);
+  //analogWrite(pin_b, original_velocity > 0 ? 0 : PWM_MIN + PWM);
 }
 
 /* Performs a software delay */
@@ -105,8 +106,9 @@ void software_delay(unsigned long milliseconds) {
     durarion: time in seconds that the motor should be on.
 */
 
-/*
-void motor(int motorR_vel, float duration){
+
+void motor(int user_motorR_vel, float duration){
+  double motorR_vel=user_motorR_vel;///(2 * PI * R_in_mm);
   //Maps the provided velocity to angular velocity
   double setpoint, wheel_PWM = 0.0;
   double setpoint_angular_vel = compute_angular_velocity_setpoint(motorR_vel);
@@ -136,12 +138,12 @@ void motor(int motorR_vel, float duration){
   noInterrupts();
   detachInterrupt(digitalPinToInterrupt(WHEEL_ENCODER_INTERRUPT_PIN));
   analogWrite(MOTOR_A, 0);
-  analogWrite(MOTOR_B, 0);
+  //analogWrite(MOTOR_B, 0);
   interrupts();
 }
-*/
 
 
+/*
 void motor(int motorR_vel, float duration){
   //Maps the provided velocity to linear velocity
   double setpoint, wheel_PWM = 0.0;
@@ -176,7 +178,7 @@ void motor(int motorR_vel, float duration){
   interrupts();
 }
 
-
+*/
 
 
 
@@ -186,14 +188,14 @@ void setup() {
   /* ================ motor setup ================ */
   pinMode(MOTOR_A, OUTPUT);
   pinMode(MOTOR_B, OUTPUT);
-  analogWrite(MOTOR_A, 0);
+  analogWrite(MOTOR_A, 100);
   analogWrite(MOTOR_B, 0);
 }
 
 void loop() {
   
-  motor(10, 1);
+  motor(10, 5);
 
   while(true)
-    delay(1000);
+    delay(300);
 }
